@@ -1,10 +1,15 @@
 # Installs CodeIgniter to the current directory
+# Modules
 import urllib
 import urllib.request
 import os
 import sys
 import zipfile
 
+"""
+    The installer class handles the download and setup of CodeIgniter using the
+    command line arguments to figure out how it should be set up.
+"""
 class Installer:
     def __init__(self):
         pass
@@ -45,10 +50,22 @@ class Installer:
         zip.close()
 
     def show_message(self):
+        parameters = [
+            '[installation_path]',
+            '[version_number]',
+            '[base_url]'
+        ]
+        usage = 'Usage: python3 install.py'
+
         print('Bee Gold - CodeIgniter Installer')
         print('MIT Callum John @ItsSeaJay 2018')
         print('https://github.com/ItsSeaJay/bee-gold/')
-        print('Usage: python3 install.py [installation_path] [version_number]')
+
+        # Build the usage string based on the kinds of parameters in the list
+        for parameter in parameters:
+            usage = usage + ' ' + parameter
+        
+        print(usage)
     
     def get_latest_release(self):
         pass
