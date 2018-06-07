@@ -1,6 +1,7 @@
 # Installs CodeIgniter to the current directory
-import urllib
+import urllib.request
 import os
+import sys
 import zipfile
 
 url = 'https://github.com/bcit-ci/CodeIgniter/archive/3.1.8.zip'
@@ -8,12 +9,20 @@ zip_file = {
     'name': 'temp.zip'
 }
 
-urllib.urlretrieve(url, zip_file['name'])
+print('Downloading file ', zip_file['name'], ' from ', url)
 
-# Extract the zip file to the current folder
+urllib.request.urlretrieve(url, zip_file['name'])
+
+print('Done')
+print('Extracting file contents...')
+
 zip_file['instance'] = zipfile.ZipFile(zip_file['name'], 'r')
-zip_file['instance'].extractall()
+zip_file['instance'].extractall(sys.argv[1] or '')
 zip_file['instance'].close()
 
-# Delete the downloaded zip file
+print('Removing temprorary files...')
+
 os.remove(zip_file['name'])
+
+print('Done.')
+print('Installation complete!')
