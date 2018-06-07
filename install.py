@@ -1,36 +1,46 @@
 # Installs CodeIgniter to the current directory
-import urllib.request
-import urllib.request
+import urllib2
 import os
 import sys
 import zipfile
 
-if len(sys.argv) > 1:
-    version_number = '3.1.8'
-    url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + version_number + '.zip'
-    zip_file = {
-        'name': 'download.zip'
-    }
+class Installer:
+    def __init__(self):
+        pass
 
-    print('Downloading file', zip_file['name'], 'from', url)
+    def install(self):
+        if len(sys.argv) > 1:
+            version_number = '3.1.8'
+            url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + version_number + '.zip'
+            zip_file = {
+                'name': 'download.zip'
+            }
 
-    urllib.request.urlretrieve(url, zip_file['name'])
+            print('Downloading file', zip_file['name'], 'from', url)
 
-    print('Done')
-    print('Extracting file contents...')
+            urllib.request.urlretrieve(url, zip_file['name'])
 
-    zip_file['instance'] = zipfile.ZipFile(zip_file['name'], 'r')
-    zip_file['instance'].extractall(sys.argv[1])
-    zip_file['instance'].close()
+            print('Done')
+            print('Extracting file contents...')
 
-    print('Removing temprorary files...')
+            zip_file['instance'] = zipfile.ZipFile(zip_file['name'], 'r')
+            zip_file['instance'].extractall(sys.argv[1])
+            zip_file['instance'].close()
 
-    os.remove(zip_file['name'])
+            print('Removing temprorary files...')
 
-    print('Done.')
-    print('Installation complete!')
-else:
-    print('Bee Gold - CodeIgniter Installer')
-    print('MIT Callum John @ItsSeaJay 2018')
-    print('https://github.com/ItsSeaJay/bee-gold/')
-    print('Usage: python3 install.py [installation_path] [version_number]')
+            os.remove(zip_file['name'])
+
+            print('Done.')
+            print('Installation complete!')
+        else:
+            print('Bee Gold - CodeIgniter Installer')
+            print('MIT Callum John @ItsSeaJay 2018')
+            print('https://github.com/ItsSeaJay/bee-gold/')
+            print('Usage: python3 install.py [installation_path] [version_number]')
+    
+    def get_latest_release(self):
+        pass
+
+installer = Installer()
+installer.install()
