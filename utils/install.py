@@ -23,7 +23,7 @@ class Installer:
         install_path = input('Enter desired install path [\'../\']:') or '../'
         codeigniter_path = install_path + 'CodeIgniter-' + version_number
         zip_file = {
-            'name': 'download.zip'
+            'name': install_path + 'download.zip'
         }
         templates = self.get_templates([
             'templates/config.template.php',
@@ -53,9 +53,9 @@ class Installer:
         print('Formatting main config file...')
 
         # Overwrite the main config file with a formatted template
-        with open(codeigniter_path + '/application/config/config.php', 'w') as file:
+        with open(install_path + '/application/config/config.php', 'w') as file:
             file.write(
-                templates['templates/config.template.php']['contents'].format(
+                templates['templates/config.template.php'].format(
                     base_url = config['base_url']
                 )
             )
@@ -64,20 +64,31 @@ class Installer:
         print('Formatting the database config file...')
 
         # Overwite the database config file with a formatted template
-        with open(codeigniter_path + '/application/config/database.php', 'w') as file:
+        with open(install_path + '/application/config/database.php', 'w') as file:
             file.write(
-                templates['templates/database.template.php']['contents'].format(
+                templates['templates/database.template.php'].format(
                     hostname = config['database']['hostname'],
                     username = config['database']['username'],
                     password = config['database']['password'],
                     database = config['database']['name']
                 )
             )
+        
+        print('Done.')
+        print('Creating public assets...')
+
+        os.makedirs(install_path + 'public')
+
+        # Create a new index file in it's own folder
+        with open(install_path + 'public/index.php', 'w'):
+            file.write(
+                templates['templates/index.template.php']
+            )
 
         print('Done.')
         print('Removing unneccessary files...')
 
-        self.cleanup(codeigniter_path)
+        self.cleanup(install_path)
 
         print('Done.')
         print('Installation complete!')
@@ -89,20 +100,18 @@ class Installer:
                 shutil.move(source + file_name, destination)
 
     def cleanup(self, path):
-        if os.path.exists(path + '/CodeIgniter-3.1.8'):
-            shutil.rmtree(path + '/CodeIgniter-3.1.8')
+        shutil.rmtree(path + 'CodeIgniter-3.1.8')
+
+        # Remove the old index file
+        if os.path.exists(path + 'index.php'):
+            os.remove(path + 'index.php')       
 
     def get_templates(self, paths):
         templates = {}
 
         for path in paths:
             with open(path, 'r') as file:
-                template = {
-                    'path': path,
-                    'contents': file.read()
-                }
-
-                templates[path] = template
+                templates[path] = file.read()
         
         return templates
     
