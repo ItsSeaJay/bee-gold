@@ -81,13 +81,13 @@ class Installer:
             os.makedirs(install_path + 'public')
 
         # Create a new index file in it's own folder
-        with open(install_path + 'public/index.php', 'w'):
+        with open(install_path + 'public/index.php', 'w') as file:
             file.write(templates['templates/index.template.php'])
 
         print('Done.')
         print('Removing unneccessary files...')
 
-        self.cleanup(install_path)
+        self.cleanup(install_path, zip_file['name'])
 
         print('Done.')
         print('Installation complete!')
@@ -98,12 +98,16 @@ class Installer:
             if not os.path.exists(destination + file_name):
                 shutil.move(source + file_name, destination)
 
-    def cleanup(self, path):
+    def cleanup(self, path, zip):
         shutil.rmtree(path + 'CodeIgniter-3.1.8')
 
         # Remove the old index file
+        if os.path.exists(zip):
+            os.remove(zip)
+        
+        # Remove the 
         if os.path.exists(path + 'index.php'):
-            os.remove(path + 'index.php')       
+            os.remove(path + 'index.php') 
 
     def get_templates(self, paths):
         templates = {}
