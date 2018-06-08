@@ -41,7 +41,8 @@ Try running the scripts directly from the terminal.
 ## License
 
 **Honey for CodeIgniter** is released under the terms of the permissive
-[MIT Open Source License](https://opensource.org/licenses/MIT)
+[MIT Open Source License](https://opensource.org/licenses/MIT). Feel free to
+use it in your own projects, big or small.
 
 ```
 MIT License
