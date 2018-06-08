@@ -9,7 +9,7 @@ import zipfile
 
 """
     The installer class handles the download and setup of CodeIgniter,
-    using the command line arguments to determine how it should be set up.
+    using the user input to determine how it should be set up.
 """
 class Installer:
     def __init__(self):
@@ -19,7 +19,7 @@ class Installer:
         # Determine where the latest version is and where the file should be stored
         version_number = '3.1.8'
         url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + version_number + '.zip'
-        install_path = input('Enter desired install path (default \'\')') or ''
+        install_path = input('Enter desired install path (default \'\'):') or ''
         path = install_path + 'CodeIgniter-' + version_number
         zip_file = {
             'name': 'download.zip'
@@ -43,6 +43,7 @@ class Installer:
 
         self.extract_files(zip_file['name'], install_path)
 
+        print('Done.')
         print('Formatting main config file...')
 
         # Overwrite the main config file with a formatted template
@@ -68,13 +69,40 @@ class Installer:
             )
 
         print('Done')
-        print('Removing temprorary files...')
+        print('Creating public assets...')
+        
+        if not os.path.exists(path + '/public'):
+            os.makedirs(path + '/public')
 
-        os.remove(zip_file['name'])
+        print('Replacing index file...')
+
+        if os.path.exists(path + '/index.php'):
+            with open(path + '/public/index.php', 'w') as file:
+                file.write(templates['templates/index.template.php']['contents'])
+            
+            os.remove(path + '/index.php')
+
+        print('Done.')
+        print('Removing unneccessary files...')
+
+        self.cleanup(path)
 
         print('Done.')
         print('Installation complete!')
     
+    def cleanup(self, path):
+        if os.path.exists(path + '/index.php'):
+            os.remove(path + '/index.php')
+        
+        if os.path.exists(path + '/license.txt'):
+            os.remove(path + '/license.txt')
+        
+        if os.path.exists(path + '/readme.rst'):
+            os.remove(path + '/readme.rst')
+        
+        if os.path.exists(path + '/contributing.md'):
+            os.remove(path + '/contributing.md')
+
     def get_templates(self, paths):
         templates = {}
 
@@ -96,6 +124,7 @@ class Installer:
 
     def extract_files(self, name, location):
         zip = zipfile.ZipFile(name, 'r')
+
         zip.extractall(location)
         zip.close()
 
