@@ -19,7 +19,7 @@ class Installer:
         # Determine where the latest version is and where the file should be stored
         version_number = '3.1.8'
         url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + version_number + '.zip'
-        install_path = input('Enter desired install path (default \'\'):') or ''
+        install_path = input('Enter desired install path [\'\']:') or ''
         path = install_path + 'CodeIgniter-' + version_number
         zip_file = {
             'name': 'download.zip'
@@ -129,7 +129,7 @@ class Installer:
         zip.close()
 
     def get_base_url(self):
-        base_url = input('Enter Base URL (default \'http://localhost/CodeIgniter-3.1.8\'):') or 'http://localhost/CodeIgniter-3.1.8'
+        base_url = input('Enter Base URL [\'http://localhost/CodeIgniter-3.1.8\']:') or 'http://localhost/CodeIgniter-3.1.8'
 
         return base_url
     
@@ -137,10 +137,10 @@ class Installer:
         print('Please enter your database configuration:')
 
         config = {
-            'hostname': input('Enter hostname (default \'localhost\'): ') or 'localhost',
-            'username': input('Enter username (default \'root\'): ') or 'root',
-            'password': input('Enter password (default \'\'): ') or '',
-            'name': input('Enter database name (default \'test\'): ') or 'test'
+            'hostname': input('Enter hostname [\'localhost\']: ') or 'localhost',
+            'username': input('Enter username [\'root\']: ') or 'root',
+            'password': input('Enter password [\'\']: ') or '',
+            'name': input('Enter database name [\'test\']: ') or 'test'
         }
 
         return config
