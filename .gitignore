@@ -17,3 +17,5 @@ application/logs/*
 /vendor/
 
 \.vscode/
+
+download\.zip
