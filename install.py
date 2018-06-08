@@ -24,9 +24,13 @@ class Installer:
         }
         templates = self.get_templates([
             'templates/config.template.php',
+            'templates/database.template.php',
             'templates/index.template.php'
         ])
-        base_url = self.get_base_url()
+        config = {
+            'base_url': self.get_base_url()
+            'database': self.get_database_config()
+        }
         
         # Don't include the dot in the install path
         if sys.argv[1] != '.':
@@ -43,18 +47,33 @@ class Installer:
 
         # self.extract_files(zip_file['name'], sys.argv[1])
 
-        print('Inserting base URL into config file')
+        print('Formatting main config file...')
 
+        # Overwrite the main config file with a formatted template
         with open(path + '/application/config/config.php', 'w') as file:
-            file.write(templates['templates/config.template.php']['contents'].format(base_url = base_url))
+            file.write(
+                templates['templates/config.template.php']['contents'].format(
+                    base_url = config['base_url']
+                )
+            )
 
         print('Done.')
+        print('Formatting the database config file...')
+
+        # Overwite the database config file with a formatted template
+        with open(path + '/application/config/database.php', 'w') as file:
+            file.write(
+                templates['templates/database.template.php']['contents'].format(
+                    base_url = config['base_url']
+                )
+            )
+
+        print('Done')
         print('Removing temprorary files...')
 
         # os.remove(zip_file['name'])
 
         print('Done.')
-
         print('Installation complete!')
     
     def get_templates(self, paths):
@@ -86,6 +105,18 @@ class Installer:
         base_url = input('Enter Base URL:')
 
         return base_url
+    
+    def get_database_config(self):
+        print('Database config')
+
+        config = {
+            'host': input('Enter hostname:')
+            'username': input('Enter username:')
+            'password': input('Enter password:')
+            'name': input('Enter database name:')
+        }
+
+        return config
 
     def show_message(self):
         parameters = [
