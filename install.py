@@ -19,6 +19,8 @@ class Installer:
         # Determine where the latest version is and where the file should be stored
         version_number = '3.1.8'
         url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + version_number + '.zip'
+        install_path = input('Enter desired install path (default \'\')') or ''
+        path = install_path + 'CodeIgniter-' + version_number
         zip_file = {
             'name': 'download.zip'
         }
@@ -28,24 +30,18 @@ class Installer:
             'templates/index.template.php'
         ])
         config = {
-            'base_url': self.get_base_url()
+            'base_url': self.get_base_url(),
             'database': self.get_database_config()
         }
         
-        # Don't include the dot in the install path
-        if sys.argv[1] != '.':
-            path = sys.argv[1] + 'CodeIgniter-' + version_number
-        else:
-            path = 'CodeIgniter-' + version_number
-        
-        print('Downloading CodeIgniter from', url, 'into', sys.argv[1])
+        print('Downloading CodeIgniter from', url, 'into', install_path, '...')
 
-        # self.download_zip(url, zip_file['name'])
+        self.download_zip(url, zip_file['name'])
 
         print('Done.')
         print('Extracting file contents...')
 
-        # self.extract_files(zip_file['name'], sys.argv[1])
+        self.extract_files(zip_file['name'], install_path)
 
         print('Formatting main config file...')
 
@@ -64,14 +60,17 @@ class Installer:
         with open(path + '/application/config/database.php', 'w') as file:
             file.write(
                 templates['templates/database.template.php']['contents'].format(
-                    base_url = config['base_url']
+                    hostname = config['database']['hostname'],
+                    username = config['database']['username'],
+                    password = config['database']['password'],
+                    database = config['database']['name']
                 )
             )
 
         print('Done')
         print('Removing temprorary files...')
 
-        # os.remove(zip_file['name'])
+        os.remove(zip_file['name'])
 
         print('Done.')
         print('Installation complete!')
@@ -91,10 +90,9 @@ class Installer:
         return templates
     
     def download_zip(self, url, location):
-        try:
-            zip = urllib.request.urlretrieve(url, location)
-        except Exception as e:
-            pass # TODO: Figure out how to output error messages
+        zip = urllib.request.urlretrieve(url, location)
+
+        return zip
 
     def extract_files(self, name, location):
         zip = zipfile.ZipFile(name, 'r')
@@ -102,43 +100,21 @@ class Installer:
         zip.close()
 
     def get_base_url(self):
-        base_url = input('Enter Base URL:')
+        base_url = input('Enter Base URL (default \'http://localhost/CodeIgniter-3.1.8\'):') or 'http://localhost/CodeIgniter-3.1.8'
 
         return base_url
     
     def get_database_config(self):
-        print('Database config')
+        print('Please enter your database configuration:')
 
         config = {
-            'host': input('Enter hostname:')
-            'username': input('Enter username:')
-            'password': input('Enter password:')
-            'name': input('Enter database name:')
+            'hostname': input('Enter hostname (default \'localhost\'): ') or 'localhost',
+            'username': input('Enter username (default \'root\'): ') or 'root',
+            'password': input('Enter password (default \'\'): ') or '',
+            'name': input('Enter database name (default \'test\'): ') or 'test'
         }
 
         return config
 
-    def show_message(self):
-        parameters = [
-            '[installation_path]',
-            '[version_number]',
-            '[base_url]'
-        ]
-        usage = 'Usage: python3 install.py'
-
-        print('Bee Gold - CodeIgniter Installer')
-        print('MIT Callum John @ItsSeaJay 2018')
-        print('https://github.com/ItsSeaJay/bee-gold/')
-
-        # Build the usage string based on the kinds of parameters in the list
-        for parameter in parameters:
-            usage = usage + ' ' + parameter
-        
-        print(usage)
-
 installer = Installer()
-
-if len(sys.argv) > 1:
-    installer.install()
-else:
-    installer.show_message()
+installer.install()
