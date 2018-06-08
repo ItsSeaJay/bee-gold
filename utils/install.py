@@ -4,6 +4,7 @@ import urllib
 import urllib.request
 import os
 import sys
+import shutil
 import string
 import zipfile
 
@@ -42,6 +43,11 @@ class Installer:
         print('Extracting file contents...')
 
         self.extract_files(zip_file['name'], install_path)
+
+        print('Done')
+        print('Moving important files into specified root...')
+
+        self.release_files()
 
         print('Done.')
         print('Formatting main config file...')
@@ -90,6 +96,9 @@ class Installer:
         print('Done.')
         print('Installation complete!')
     
+    def release_files(self):
+        pass
+
     def cleanup(self, path):
         if os.path.exists(path + '/index.php'):
             os.remove(path + '/index.php')

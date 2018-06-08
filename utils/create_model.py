@@ -8,7 +8,7 @@ version_number = '3.1.8'
 # Get the path of the new class
 name = input('Enter the location of the new model [\'Super_model\']: ') or 'Super'
 # Format the name of the new model into a valid name
-name = name.capitalize()
+name = name.capitalize(name.lower())
 name = name + '_model'
 # Get the name of the table used by this model
 table = input('Enter the database table that this model will use [\'test\']: ') or 'test'
