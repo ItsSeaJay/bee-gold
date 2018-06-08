@@ -26,8 +26,8 @@ class Installer:
             'name': install_path + 'download.zip'
         }
         templates = self.get_templates([
-            'templates/config.template.php',
-            'templates/database.template.php',
+            'templates/config/config.template.php',
+            'templates/config/database.template.php',
             'templates/index.template.php'
         ])
         config = {
@@ -55,7 +55,7 @@ class Installer:
         # Overwrite the main config file with a formatted template
         with open(install_path + '/application/config/config.php', 'w') as file:
             file.write(
-                templates['templates/config.template.php'].format(
+                templates['templates/config/config.template.php'].format(
                     base_url = config['base_url']
                 )
             )
@@ -66,7 +66,7 @@ class Installer:
         # Overwite the database config file with a formatted template
         with open(install_path + '/application/config/database.php', 'w') as file:
             file.write(
-                templates['templates/database.template.php'].format(
+                templates['templates/config/database.template.php'].format(
                     hostname = config['database']['hostname'],
                     username = config['database']['username'],
                     password = config['database']['password'],
@@ -77,13 +77,12 @@ class Installer:
         print('Done.')
         print('Creating public assets...')
 
-        os.makedirs(install_path + 'public')
+        if not os.path.exists(install_path + 'public'):
+            os.makedirs(install_path + 'public')
 
         # Create a new index file in it's own folder
         with open(install_path + 'public/index.php', 'w'):
-            file.write(
-                templates['templates/index.template.php']
-            )
+            file.write(templates['templates/index.template.php'])
 
         print('Done.')
         print('Removing unneccessary files...')
