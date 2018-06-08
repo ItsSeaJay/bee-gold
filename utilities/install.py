@@ -1,5 +1,6 @@
 # Installs CodeIgniter to the specified directory
 # Modules
+import json
 import urllib
 import urllib.request
 import os
@@ -20,40 +21,42 @@ class Installer:
         # Determine where the latest version is and where the file should be stored
         version_number = '3.1.8'
         url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + version_number + '.zip'
-        install_path = input('Enter desired install path [\'../\']:') or '../'
-        codeigniter_path = install_path + 'CodeIgniter-' + version_number
-        zip_file = {
-            'name': install_path + 'download.zip'
-        }
         templates = self.get_templates([
             'templates/config/config.template.php',
             'templates/config/database.template.php',
             'templates/index.template.php'
         ])
         config = {
+            'paths': {
+                'install': input('Enter desired install path [\'../\']:') or '../'
+            },
             'base_url': self.get_base_url(),
             'database': self.get_database_config()
         }
+        config['paths']['codeigniter'] = config['paths']['install'] + 'CodeIgniter-' + version_number + '/'
+        zip_file = {
+            'name': config['paths']['install'] + 'download.zip'
+        }
         
-        print('Downloading CodeIgniter from', url, 'into', install_path, '...')
+        print('Downloading CodeIgniter from', url, 'into', config['paths']['install'], '...')
 
         self.download_zip(url, zip_file['name'])
 
         print('Done.')
         print('Extracting file contents to temporary location...')
 
-        self.extract_files(zip_file['name'], install_path)
+        self.extract_files(zip_file['name'], config['paths']['install'])
 
         print('Done')
         print('Moving CodeIgniter files into specified root...')
 
-        self.move_files(codeigniter_path, install_path)
+        self.move_files(config['paths']['codeigniter'], config['paths']['install'])
 
         print('Done.')
         print('Formatting main config file...')
 
         # Overwrite the main config file with a formatted template
-        with open(install_path + '/application/config/config.php', 'w') as file:
+        with open(config['paths']['install'] + '/application/config/config.php', 'w') as file:
             file.write(
                 templates['templates/config/config.template.php'].format(
                     base_url = config['base_url']
@@ -64,7 +67,7 @@ class Installer:
         print('Formatting the database config file...')
 
         # Overwite the database config file with a formatted template
-        with open(install_path + '/application/config/database.php', 'w') as file:
+        with open(config['paths']['install'] + '/application/config/database.php', 'w') as file:
             file.write(
                 templates['templates/config/database.template.php'].format(
                     hostname = config['database']['hostname'],
@@ -77,21 +80,42 @@ class Installer:
         print('Done.')
         print('Creating public assets...')
 
-        if not os.path.exists(install_path + 'public'):
-            os.makedirs(install_path + 'public')
+        if not os.path.exists(config['paths']['install'] + 'public'):
+            os.makedirs(config['paths']['install'] + 'public')
 
         # Create a new index file in it's own folder
-        with open(install_path + 'public/index.php', 'w') as file:
+        with open(config['paths']['install'] + 'public/index.php', 'w') as file:
             file.write(templates['templates/index.template.php'])
 
         print('Done.')
         print('Removing unneccessary files...')
 
-        self.cleanup(install_path, zip_file['name'])
+        self.cleanup(config['paths']['install'], zip_file['name'])
 
         print('Done.')
+        print('Saving input as config.json...')
+
+        with open('config.json', 'w') as file:
+            # Convert the user's configuration into a json file
+            json.dump(
+                config, # Path
+                file, # File to output to
+                sort_keys = True, # Whether to sort the keys or not
+                indent = 4, # Number of spaces to indent by
+                separators = (',', ':')
+            )
+
         print('Installation complete!')
     
+    def download_zip(self, url, location):
+        urllib.request.urlretrieve(url, location)
+
+    def extract_files(self, name, location):
+        zip = zipfile.ZipFile(name, 'r')
+
+        zip.extractall(location)
+        zip.close()
+
     def move_files(self, source, destination):
         # Move the contents of the codeigniter folder to another location
         for file_name in os.listdir(source):
@@ -122,17 +146,6 @@ class Installer:
                 templates[path] = file.read()
         
         return templates
-    
-    def download_zip(self, url, location):
-        zip = urllib.request.urlretrieve(url, location)
-
-        return zip
-
-    def extract_files(self, name, location):
-        zip = zipfile.ZipFile(name, 'r')
-
-        zip.extractall(location)
-        zip.close()
 
     def get_base_url(self):
         base_url = input('Enter Base URL [\'http://localhost/CodeIgniter-3.1.8\']:') or 'http://localhost/CodeIgniter-3.1.8'
