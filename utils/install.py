@@ -89,8 +89,8 @@ class Installer:
                 shutil.move(source + file_name, destination)
 
     def cleanup(self, path):
-        if os.isdir(path + 'CodeIgniter-3.1.8'):
-            shutil.rmtree(path + 'CodeIgniter-3.1.8')
+        if os.path.exists(path + '/CodeIgniter-3.1.8'):
+            shutil.rmtree(path + '/CodeIgniter-3.1.8')
 
     def get_templates(self, paths):
         templates = {}

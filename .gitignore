@@ -19,4 +19,13 @@ application/logs/*
 \.vscode/
 
 download\.zip
-CodeIgniter-3.1.8/*
+CodeIgniter
+application
+system
+user_guide
+public
+composer.json
+contributing.md
+index.php
+license.txt
+readme.rst
