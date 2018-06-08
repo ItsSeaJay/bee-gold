@@ -18,22 +18,25 @@ class Installer:
         pass
 
     def install(self):
-        # Determine where the latest version is and where the file should be stored
-        version_number = '3.1.8'
+        # Get the desired version number to  be installed
+        version_number = input('Enter release number [\'3.1.8\']: ') or '3.1.8'
+        # Build the download URL based on the chosen version number
         url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + version_number + '.zip'
         templates = self.get_templates([
             'templates/config/config.template.php',
             'templates/config/database.template.php',
             'templates/index.template.php'
         ])
+        # Get the install configuration from the user
         config = {
             'paths': {
-                'install': input('Enter desired install path [\'../\']:') or '../'
+                'install': input('Enter desired install path [\'../\']: ') or '../'
             },
             'base_url': self.get_base_url(),
             'database': self.get_database_config()
         }
         config['paths']['codeigniter'] = config['paths']['install'] + 'CodeIgniter-' + version_number + '/'
+        # Determine where the zip file will be downloaded
         zip_file = {
             'name': config['paths']['install'] + 'download.zip'
         }
@@ -107,6 +110,10 @@ class Installer:
 
         print('Installation complete!')
     
+    def welcome(self):
+        print('CodeIgniter Honey - Installer')
+        print('MIT Callum John @ItsSeaJay 2018')
+
     def download_zip(self, url, location):
         urllib.request.urlretrieve(url, location)
 
@@ -148,7 +155,7 @@ class Installer:
         return templates
 
     def get_base_url(self):
-        base_url = input('Enter Base URL [\'http://localhost/CodeIgniter-3.1.8\']:') or 'http://localhost/CodeIgniter-3.1.8'
+        base_url = input('Enter Base URL [\'http://localhost/CodeIgniter-3.1.8\']: ') or 'http://localhost/CodeIgniter-3.1.8'
 
         return base_url
     
@@ -156,13 +163,14 @@ class Installer:
         print('Please enter your database configuration:')
 
         config = {
-            'hostname': input('Enter hostname [\'localhost\']: ') or 'localhost',
-            'username': input('Enter username [\'root\']: ') or 'root',
-            'password': input('Enter password [\'\']: ') or '',
-            'name': input('Enter database name [\'test\']: ') or 'test'
+            'hostname': input('Enter hostname [\'localhost\']:  ') or 'localhost',
+            'username': input('Enter username [\'root\']:  ') or 'root',
+            'password': input('Enter password [\'\']:  ') or '',
+            'name': input('Enter database name [\'test\']:  ') or 'test'
         }
 
         return config
 
 installer = Installer()
+installer.welcome()
 installer.install()
