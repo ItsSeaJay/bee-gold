@@ -20,6 +20,8 @@ game engine or dedicated Internal Development Environment.
 
 and more!
 
+\* NOTE: This may not currently work with CodeIgniter versions beneath `3.1.7`
+
 ## Requirements
 - An internet connection
 - Python v3.6.1
@@ -31,5 +33,3 @@ and more!
    your project
 3. Run `install.bat` and follow the instructions
 4. Enjoy
-
-*May not actually work with CodeIgniter versions beneath `3.1.7`
