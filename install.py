@@ -5,10 +5,11 @@ import urllib.request
 import os
 import sys
 import zipfile
+from string import Template
 
 """
-    The installer class handles the download and setup of CodeIgniter using the
-    command line arguments to figure out how it should be set up.
+    The installer class handles the download and setup of CodeIgniter,
+    using the command line arguments to determine how it should be set up.
 """
 class Installer:
     def __init__(self):
@@ -21,21 +22,34 @@ class Installer:
         zip_file = {
             'name': 'download.zip'
         }
+        templates: {
+            'test': {
+                'path': 'templates/test.template.php'
+            }
+        }
+        base_url = self.get_base_url()
+        print(base_url)
 
+        with open(templates['test']['path'], 'r') as template:
+            templates['test']['contents'] = print(template.read())
+        
+        print(templates['test']['contents'])
+        print(base_url)
         print('Downloading CodeIgniter from', url, 'into', sys.argv[1])
 
-        self.download_zip(url, zip_file['name'])
+        # self.download_zip(url, zip_file['name'])
 
-        print('Done')
+        print('Done.')
         print('Extracting file contents...')
 
-        self.extract_files(zip_file['name'], sys.argv[1])
+        # self.extract_files(zip_file['name'], sys.argv[1])
 
         print('Removing temprorary files...')
 
-        os.remove(zip_file['name'])
+        # os.remove(zip_file['name'])
 
         print('Done.')
+
         print('Installation complete!')
     
     def download_zip(self, url, location):
@@ -48,6 +62,11 @@ class Installer:
         zip = zipfile.ZipFile(name, 'r')
         zip.extractall(location)
         zip.close()
+
+    def get_base_url(self):
+        base_url = input('Enter Base URL:')
+
+        return base_url
 
     def show_message(self):
         parameters = [
@@ -66,9 +85,6 @@ class Installer:
             usage = usage + ' ' + parameter
         
         print(usage)
-    
-    def get_latest_release(self):
-        pass
 
 installer = Installer()
 
