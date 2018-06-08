@@ -1,11 +1,11 @@
-# Installs CodeIgniter to the current directory
+# Installs CodeIgniter to the specified directory
 # Modules
 import urllib
 import urllib.request
 import os
 import sys
+import string
 import zipfile
-from string import Template
 
 """
     The installer class handles the download and setup of CodeIgniter,
@@ -22,19 +22,18 @@ class Installer:
         zip_file = {
             'name': 'download.zip'
         }
-        templates: {
-            'test': {
-                'path': 'templates/test.template.php'
-            }
-        }
+        templates = self.get_templates([
+            'templates/config.template.php',
+            'templates/index.template.php'
+        ])
         base_url = self.get_base_url()
-        print(base_url)
-
-        with open(templates['test']['path'], 'r') as template:
-            templates['test']['contents'] = print(template.read())
         
-        print(templates['test']['contents'])
-        print(base_url)
+        # Don't include the dot in the install path
+        if sys.argv[1] != '.':
+            path = sys.argv[1] + 'CodeIgniter-' + version_number
+        else:
+            path = 'CodeIgniter-' + version_number
+        
         print('Downloading CodeIgniter from', url, 'into', sys.argv[1])
 
         # self.download_zip(url, zip_file['name'])
@@ -44,6 +43,12 @@ class Installer:
 
         # self.extract_files(zip_file['name'], sys.argv[1])
 
+        print('Inserting base URL into config file')
+
+        with open(path + '/application/config/config.php', 'w') as file:
+            file.write(templates['templates/config.template.php']['contents'].format(base_url = base_url))
+
+        print('Done.')
         print('Removing temprorary files...')
 
         # os.remove(zip_file['name'])
@@ -51,6 +56,20 @@ class Installer:
         print('Done.')
 
         print('Installation complete!')
+    
+    def get_templates(self, paths):
+        templates = {}
+
+        for path in paths:
+            with open(path, 'r') as file:
+                template = {
+                    'path': path,
+                    'contents': file.read()
+                }
+
+                templates[path] = template
+        
+        return templates
     
     def download_zip(self, url, location):
         try:
