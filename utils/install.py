@@ -20,8 +20,8 @@ class Installer:
         # Determine where the latest version is and where the file should be stored
         version_number = '3.1.8'
         url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + version_number + '.zip'
-        install_path = input('Enter desired install path [\'\']:') or ''
-        path = install_path + 'CodeIgniter-' + version_number
+        install_path = input('Enter desired install path [\'../\']:') or '../'
+        codeigniter_path = install_path + 'CodeIgniter-' + version_number
         zip_file = {
             'name': 'download.zip'
         }
@@ -40,20 +40,20 @@ class Installer:
         self.download_zip(url, zip_file['name'])
 
         print('Done.')
-        print('Extracting file contents...')
+        print('Extracting file contents to temporary location...')
 
         self.extract_files(zip_file['name'], install_path)
 
         print('Done')
-        print('Moving important files into specified root...')
+        print('Moving CodeIgniter files into specified root...')
 
-        self.release_files()
+        self.move_files(codeigniter_path, install_path)
 
         print('Done.')
         print('Formatting main config file...')
 
         # Overwrite the main config file with a formatted template
-        with open(path + '/application/config/config.php', 'w') as file:
+        with open(codeigniter_path + '/application/config/config.php', 'w') as file:
             file.write(
                 templates['templates/config.template.php']['contents'].format(
                     base_url = config['base_url']
@@ -64,7 +64,7 @@ class Installer:
         print('Formatting the database config file...')
 
         # Overwite the database config file with a formatted template
-        with open(path + '/application/config/database.php', 'w') as file:
+        with open(codeigniter_path + '/application/config/database.php', 'w') as file:
             file.write(
                 templates['templates/database.template.php']['contents'].format(
                     hostname = config['database']['hostname'],
@@ -74,43 +74,23 @@ class Installer:
                 )
             )
 
-        print('Done')
-        print('Creating public assets...')
-        
-        if not os.path.exists(path + '/public'):
-            os.makedirs(path + '/public')
-
-        print('Replacing index file...')
-
-        if os.path.exists(path + '/index.php'):
-            with open(path + '/public/index.php', 'w') as file:
-                file.write(templates['templates/index.template.php']['contents'])
-            
-            os.remove(path + '/index.php')
-
         print('Done.')
         print('Removing unneccessary files...')
 
-        self.cleanup(path)
+        self.cleanup(codeigniter_path)
 
         print('Done.')
         print('Installation complete!')
     
-    def release_files(self):
-        pass
+    def move_files(self, source, destination):
+        # Move the contents of the codeigniter folder to another location
+        for file_name in os.listdir(source):
+            if not os.path.exists(destination + file_name):
+                shutil.move(source + file_name, destination)
 
     def cleanup(self, path):
-        if os.path.exists(path + '/index.php'):
-            os.remove(path + '/index.php')
-        
-        if os.path.exists(path + '/license.txt'):
-            os.remove(path + '/license.txt')
-        
-        if os.path.exists(path + '/readme.rst'):
-            os.remove(path + '/readme.rst')
-        
-        if os.path.exists(path + '/contributing.md'):
-            os.remove(path + '/contributing.md')
+        if os.isdir(path + 'CodeIgniter-3.1.8'):
+            shutil.rmtree(path + 'CodeIgniter-3.1.8')
 
     def get_templates(self, paths):
         templates = {}
