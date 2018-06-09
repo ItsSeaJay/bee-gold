@@ -45,17 +45,14 @@ class Installer:
 
         self.download_zip(url, zip_file['name'])
 
-        print('Done.')
         print('Extracting file contents to temporary location...')
 
         self.extract_files(zip_file['name'], config['paths']['install'])
 
-        print('Done')
         print('Moving CodeIgniter files into specified root...')
 
         self.move_files(config['paths']['codeigniter'], config['paths']['install'])
 
-        print('Done.')
         print('Formatting main config file...')
 
         # Overwrite the main config file with a formatted template
@@ -66,7 +63,6 @@ class Installer:
                 )
             )
 
-        print('Done.')
         print('Formatting the database config file...')
 
         # Overwite the database config file with a formatted template
@@ -80,7 +76,6 @@ class Installer:
                 )
             )
         
-        print('Done.')
         print('Creating public assets...')
 
         if not os.path.exists(config['paths']['install'] + 'public'):
