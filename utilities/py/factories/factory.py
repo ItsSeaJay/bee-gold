@@ -1,8 +1,4 @@
-# Adds a new controller to a CodeIgniter Installation
 import json
-import os
-import sys
-import string
 
 class Factory:
     def __init__(self):
@@ -11,6 +7,14 @@ class Factory:
     @staticmethod
     def create(self):
         pass
+
+    @staticmethod
+    def get_template(self):
+        pass
     
     def get_config(self):
-        
+        with open('json/config.json', 'r') as file:
+            # Convert the contents of the file to a Python dictionary
+            config = json.loads(file.read())
+
+        return config

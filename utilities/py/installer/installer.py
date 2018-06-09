@@ -1,12 +1,12 @@
 # Installs CodeIgniter to the specified directory
 # Modules
 import json
-import urllib
-import urllib.request
 import os
 import sys
 import shutil
 import string
+import urllib
+import urllib.request
 import zipfile
 
 """
@@ -34,8 +34,8 @@ class Installer:
         download_url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + self.config['codeigniter']['version'] + '.zip'
         # Get the templates from the templates folder
         templates = self.get_templates([
-            'templates/config/config.template.php',
-            'templates/config/database.template.php',
+            'templates/application/config/config.template.php',
+            'templates/application/config/database.template.php',
             'templates/index.template.php'
         ])
         # Determine where the zip file will be downloaded
@@ -73,7 +73,7 @@ class Installer:
         # Overwrite the main config file with a formatted template
         with open(self.config['project']['path'] + '/application/config/config.php', 'w') as file:
             file.write(
-                templates['templates/config/config.template.php'].format(
+                templates['templates/application/config/config.template.php'].format(
                     base_url = self.config['project']['base_url']
                 )
             )
@@ -83,7 +83,7 @@ class Installer:
         # Overwite the database config file with a formatted template
         with open(self.config['project']['path'] + '/application/config/database.php', 'w') as file:
             file.write(
-                templates['templates/config/database.template.php'].format(
+                templates['templates/application/config/database.template.php'].format(
                     hostname = self.config['database']['hostname'],
                     username = self.config['database']['username'],
                     password = self.config['database']['password'],
