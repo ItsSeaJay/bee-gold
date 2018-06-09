@@ -23,10 +23,10 @@ class Config_factory(Factory):
     def get_template(self, name):        
         with open('templates/application/config.template.php', 'r') as file:
             template = file.read()
-            template.format(
+            template = template.format(
                 name = name
             )
-        
+
         return template
 
 factory = Config_factory()
