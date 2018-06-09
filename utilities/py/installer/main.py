@@ -1,4 +1,4 @@
-from installer import Installer
+import installer
 
 installer = Installer()
 installer.welcome()
