@@ -1,3 +1,3 @@
 @echo off
 
-python3 create_model.py
+python3 py/factories/model_factory.py
