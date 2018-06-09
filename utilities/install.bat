@@ -1,3 +1,3 @@
 @echo off
 
-python3 install.py
+python3 py/installer/main.py

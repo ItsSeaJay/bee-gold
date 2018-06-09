@@ -18,28 +18,24 @@ class Installer:
         pass
 
     def install(self):
-        # Get the desired version number to  be installed
-        version_number = input('Enter release number [\'3.1.8\']: ') or '3.1.8'
+        # Get the configuration for this
+        config = self.get_config()
         # Build the download URL based on the chosen version number
-        url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + version_number + '.zip'
+        url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + config['codeigniter']['version'] + '.zip'
         templates = self.get_templates([
             'templates/config/config.template.php',
             'templates/config/database.template.php',
             'templates/index.template.php'
         ])
-        # Get the install configuration from the user
-        config = {
-            'paths': {
-                'install': input('Enter desired install path [\'../\']: ') or '../'
-            },
-            'base_url': self.get_base_url(),
-            'database': self.get_database_config()
-        }
-        config['paths']['codeigniter'] = config['paths']['install'] + 'CodeIgniter-' + version_number + '/'
         # Determine where the zip file will be downloaded
         zip_file = {
             'name': config['paths']['install'] + 'download.zip'
         }
+
+        print('Verifying install directory...')
+
+        if not os.path.exists(config['paths']['install']):
+            os.makedirs(config['paths']['install'])
         
         print('Downloading CodeIgniter from', url, 'into', config['paths']['install'], '...')
 
@@ -119,12 +115,13 @@ class Installer:
         zip.close()
 
     def move_files(self, source, destination):
-        # Move the contents of the codeigniter folder to another location
+        # Move the contents of the chosen folder to another location
         for file_name in os.listdir(source):
             if not os.path.exists(destination + file_name):
                 shutil.move(source + file_name, destination)
 
     def cleanup(self, path, zip):
+        # TODO: take the version number into account
         shutil.rmtree(path + 'CodeIgniter-3.1.8')
         shutil.rmtree(path + 'user_guide')
 
@@ -154,15 +151,29 @@ class Installer:
 
         return base_url
     
-    def get_database_config(self):
-        print('Please enter your database configuration:')
-
+    def get_config(self):
         config = {
-            'hostname': input('Enter hostname [\'localhost\']:  ') or 'localhost',
-            'username': input('Enter username [\'root\']:  ') or 'root',
-            'password': input('Enter password [\'\']:  ') or '',
-            'name': input('Enter database name [\'test\']:  ') or 'test'
+            'codeigniter': {
+                version: input('Enter the CodeIgniter version [\'3.1.8\']') or '3.1.8'
+            },
+            'application': {
+                # The application path needs to be based off the root utilities folder
+                'path': '../../' + input('Enter desired install path [\'../\']: ') or '../../' + '../',
+                'name': input('Enter your application name [\'My CodeIgniter Application\']') or 'My CodeIgniter Application'
+                'author': input('Enter your name [\'John \'Rasmuslerdorf\' Doe\']: ') or 'John \'Rasmuslerdorf\' Doe'
+            },
+            'database': {
+                'hostname': input('Enter database hostname [\'localhost\']:  ') or 'localhost',
+                'username': input('Enter database username [\'root\']:  ') or 'root',
+                'password': input('Enter database password [\'\']:  ') or '',
+                'name': input('Enter database name [\'test\']:  ') or 'test'
+            },
+            'base_url': self.get_base_url(),
+            'database': self.get_database_config()
         }
+        # The codeigniter path requires previous knowledge of the config dictionary
+        # so set it after everything else
+        config['codeigniter']['path'] = config['paths']['install'] + 'CodeIgniter-' + version_number + '/'
 
         return config
 
