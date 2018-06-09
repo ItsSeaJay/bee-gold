@@ -74,7 +74,7 @@ class Installer:
         with open(self.config['project']['path'] + '/application/config/config.php', 'w') as file:
             file.write(
                 templates['templates/config/config.template.php'].format(
-                    base_url = self.config['base_url']
+                    base_url = self.config['project']['base_url']
                 )
             )
 
@@ -93,6 +93,7 @@ class Installer:
         
         print('Creating public assets...')
 
+        # Create a folder for the project's public assets
         if not os.path.exists(self.config['project']['path'] + 'public'):
             os.makedirs(self.config['project']['path'] + 'public')
 
@@ -100,12 +101,10 @@ class Installer:
         with open(self.config['project']['path'] + 'public/index.php', 'w') as file:
             file.write(templates['templates/index.template.php'])
 
-        print('Done.')
         print('Removing unneccessary files...')
 
-        self.cleanup(self.config['project']['path'], zip_file['name'])
+        self.cleanup(self.config['project']['path'], zip_file)
 
-        print('Done.')
         print('Saving input as config.json...')
 
         self.save_config()
@@ -143,11 +142,11 @@ class Installer:
         Saves the install configuration as a JSON file
     """
     def save_config(self):
-        with open('../../json/config.json', 'w') as file:
-            # Convert the user's configuration into a json file
-            # and store it on disk
+        with open('json/config.json', 'w') as file:
+            # Convert the user's configuration into a json file and store it
+            # on disk
             json.dump(
-                config, # Data to encode
+                self.config, # Data to encode
                 file, # Name of the file to output to
                 sort_keys = True, # Whether to sort the keys or not
                 indent = 4, # Number of spaces to indent by
@@ -180,12 +179,12 @@ class Installer:
         urllib.request.urlretrieve(source, destination)
 
     """
-        Extracts the codeigniter files to a proper location
+        Extracts the data from a zip folder to a specific location
     """
-    def extract_files(self, name, location):
-        zip = zipfile.ZipFile(name, 'r')
+    def extract_files(self, source, destination):
+        zip = zipfile.ZipFile(source, 'r')
 
-        zip.extractall(location)
+        zip.extractall(destination)
         zip.close()
 
     """
