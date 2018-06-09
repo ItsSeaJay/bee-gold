@@ -16,12 +16,12 @@ game engine like Unity or Unreal.
 ## Features
 - A fully-interactive installer that downloads, secures, unpacks and configures 
   any release of CodeIgniter*
-- Creators that can add new functionality to your application based on
+- Factories that can extend the functionality of your application based on
   user-modifiable templates
 
 and more!
 
-\* NOTE: This may not currently work with CodeIgniter versions beneath `3.1.7`
+\* NOTE: This hasn't been tested with CodeIgniter versions below `3.1.*`
 
 ## Requirements
 - An internet connection
@@ -37,6 +37,9 @@ and more!
 
 ### Other Platforms
 Try running the scripts directly from the terminal.
+
+Please note that **Honey for CodeIgniter** is intended to exist once for each
+project that requires it.
 
 ## License
 
@@ -66,5 +69,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
 ```

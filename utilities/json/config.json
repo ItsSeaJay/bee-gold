@@ -1,18 +1,18 @@
 {
-    "codeigniter" : {
-        "path" : "../CodeIgniter-3.1.8/",
-        "version" : "3.1.8"
+    "codeigniter": {
+        "path": "../../codeigniter/3.1.6/CodeIgniter-3.1.6/",
+        "version": "3.1.6"
     },
-    "database" : {
-        "hostname" : "localhost",
-        "name" : "test",
-        "password" : "",
-        "username" : "root"
+    "database": {
+        "hostname": "localhost",
+        "name": "test",
+        "password": "",
+        "username": "root"
     },
-    "project" : {
-        "author" : "John 'Rasmuslerdorf' Doe",
-        "base_url" : "http://localhost/bee-gold/public/",
-        "name" : "My CodeIgniter Application",
-        "path" : "../"
+    "project": {
+        "author": "John 'Rasmuslerdorf' Doe",
+        "base_url": "http://localhost/codeigniter/3.1.6/public/",
+        "name": "CodeIgniter",
+        "path": "../../codeigniter/3.1.6/"
     }
 }

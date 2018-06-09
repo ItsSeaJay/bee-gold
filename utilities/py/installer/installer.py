@@ -150,7 +150,7 @@ class Installer:
                 file, # Name of the file to output to
                 sort_keys = True, # Whether to sort the keys or not
                 indent = 4, # Number of spaces to indent by
-                separators = (',', ' : ') # How the seperators should be formatted
+                separators = (',', ': ') # How the seperators should be formatted
             )
 
     """
