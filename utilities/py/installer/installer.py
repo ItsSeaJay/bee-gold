@@ -11,39 +11,55 @@ import zipfile
 
 """
     The installer class handles the download and setup of CodeIgniter,
-    using the user input to determine how it should be set up.
+    using user input to determine how it should be configured.
 """
 class Installer:
     def __init__(self):
         pass
 
+    """
+        Welcomes the user to the program
+    """
+    def welcome(self):
+        print('CodeIgniter Honey - Installer')
+        print('MIT Callum John @ItsSeaJay 2018')
+
+    """
+        Handles the installation process
+    """
     def install(self):
         # Get the configuration for this
-        config = self.get_config()
+        self.config = self.get_config()
         # Build the download URL based on the chosen version number
-        url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + config['codeigniter']['version'] + '.zip'
+        download_url = 'https://github.com/bcit-ci/CodeIgniter/archive/' + config['codeigniter']['version'] + '.zip'
+        # Get the templates from the templates folder
         templates = self.get_templates([
             'templates/config/config.template.php',
             'templates/config/database.template.php',
             'templates/index.template.php'
         ])
         # Determine where the zip file will be downloaded
-        zip_file = {
-            'name': config['paths']['install'] + 'download.zip'
-        }
+        zip_file = config['application']['path'] + 'CodeIgniter-' + config['codeigniter']['version'] + '.zip'
 
         print('Verifying install directory...')
 
-        if not os.path.exists(config['paths']['install']):
-            os.makedirs(config['paths']['install'])
+        # Make the install directory if it doesn't already exist
+        if not os.path.exists(config['application']['path']):
+            os.makedirs(config['application']['path'])
         
-        print('Downloading CodeIgniter from', url, 'into', config['paths']['install'], '...')
+        print(
+            'Downloading CodeIgniter from',
+            url,
+            'into',
+            config['paths']['install'], 
+            '...'
+        )
 
-        self.download_zip(url, zip_file['name'])
+        self.download(download_url, zip_file)
 
         print('Extracting file contents to temporary location...')
 
-        self.extract_files(zip_file['name'], config['paths']['install'])
+        self.extract_files(zip_file], config['paths']['install'])
 
         print('Moving CodeIgniter files into specified root...')
 
@@ -89,24 +105,48 @@ class Installer:
         print('Done.')
         print('Saving input as config.json...')
 
+        self.save_config()
+
+        print('Installation complete!')
+
+    def get_config(self):
+        config = {
+            'codeigniter': {
+                version: input('Enter the CodeIgniter version [\'3.1.8\']') or '3.1.8'
+            },
+            'application': {
+                # The application path needs to be based off the root utilities folder
+                'path': '../../' + input('Enter desired install path [\'../\']: ') or '../../' + '../',
+                'name': input('Enter your application name [\'My CodeIgniter Application\']') or 'My CodeIgniter Application'
+                'author': input('Enter your name [\'John \'Rasmuslerdorf\' Doe\']: ') or 'John \'Rasmuslerdorf\' Doe',
+                'base_url': input('')
+            },
+            'database': {
+                'hostname': input('Enter database hostname [\'localhost\']:  ') or 'localhost',
+                'username': input('Enter database username [\'root\']:  ') or 'root',
+                'password': input('Enter database password [\'\']:  ') or '',
+                'name': input('Enter database name [\'test\']:  ') or 'test'
+            }
+        }
+        # The codeigniter path requires previous knowledge of the config dictionary
+        # so set it after everything else
+        config['codeigniter']['path'] = config['paths']['install'] + 'CodeIgniter-' + version_number + '/'
+
+        return config
+    
+    def save_config(self):
         with open('config.json', 'w') as file:
             # Convert the user's configuration into a json file
             json.dump(
-                config, # Path
+                config, # Data
                 file, # File to output to
                 sort_keys = True, # Whether to sort the keys or not
                 indent = 4, # Number of spaces to indent by
                 separators = (',', ':')
             )
 
-        print('Installation complete!')
-    
-    def welcome(self):
-        print('CodeIgniter Honey - Installer')
-        print('MIT Callum John @ItsSeaJay 2018')
-
-    def download_zip(self, url, location):
-        urllib.request.urlretrieve(url, location)
+    def download(self, source, destination):
+        urllib.request.urlretrieve(source, destination)
 
     def extract_files(self, name, location):
         zip = zipfile.ZipFile(name, 'r')
@@ -145,38 +185,3 @@ class Installer:
                 templates[path] = file.read()
         
         return templates
-
-    def get_base_url(self):
-        base_url = input('Enter Base URL [\'http://localhost/CodeIgniter-3.1.8\']: ') or 'http://localhost/CodeIgniter-3.1.8'
-
-        return base_url
-    
-    def get_config(self):
-        config = {
-            'codeigniter': {
-                version: input('Enter the CodeIgniter version [\'3.1.8\']') or '3.1.8'
-            },
-            'application': {
-                # The application path needs to be based off the root utilities folder
-                'path': '../../' + input('Enter desired install path [\'../\']: ') or '../../' + '../',
-                'name': input('Enter your application name [\'My CodeIgniter Application\']') or 'My CodeIgniter Application'
-                'author': input('Enter your name [\'John \'Rasmuslerdorf\' Doe\']: ') or 'John \'Rasmuslerdorf\' Doe'
-            },
-            'database': {
-                'hostname': input('Enter database hostname [\'localhost\']:  ') or 'localhost',
-                'username': input('Enter database username [\'root\']:  ') or 'root',
-                'password': input('Enter database password [\'\']:  ') or '',
-                'name': input('Enter database name [\'test\']:  ') or 'test'
-            },
-            'base_url': self.get_base_url(),
-            'database': self.get_database_config()
-        }
-        # The codeigniter path requires previous knowledge of the config dictionary
-        # so set it after everything else
-        config['codeigniter']['path'] = config['paths']['install'] + 'CodeIgniter-' + version_number + '/'
-
-        return config
-
-installer = Installer()
-installer.welcome()
-installer.install()
