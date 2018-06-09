@@ -1,3 +1,3 @@
 @echo off
 
-python3 create_controller.py
+python3 py/factories/controller_factory.py

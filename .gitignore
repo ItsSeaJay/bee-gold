@@ -29,3 +29,4 @@ contributing.md
 index.php
 license.txt
 readme.rst
+*.pyc
