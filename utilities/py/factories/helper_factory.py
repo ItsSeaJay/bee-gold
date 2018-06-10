@@ -29,5 +29,7 @@ class Helper_factory(Factory):
 				function = self.function
 			)
 
+		return template
+
 factory = Helper_factory()
 factory.create()
