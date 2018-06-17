@@ -20,7 +20,7 @@ application/logs/*
 
 download\.zip
 CodeIgniter
-application
+\application
 system
 user_guide
 public
