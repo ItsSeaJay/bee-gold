@@ -18,12 +18,12 @@ application/logs/*
 
 \.vscode/
 
-download\.zip
-CodeIgniter
-\application
-system
-user_guide
-public
+/download/.zip
+/CodeIgniter
+/application
+/system
+/user_guide
+/public
 composer.json
 contributing.md
 index.php
